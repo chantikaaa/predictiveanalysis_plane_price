@@ -44,26 +44,62 @@ Length ft/in: Panjang badan pesawat.
 Wing span ft/in: Rentang sayap pesawat.
 Range N.M.: Jarak tempuh maksimum pesawat dalam satuan nautical miles (N.M.).
 Price: Harga pesawat (dalam USD), merupakan variabel target dalam model regresi ini.
-Proses Pemahaman Data
+### Proses Pemahaman Data
 Untuk memahami struktur dan kualitas data, beberapa langkah Exploratory Data Analysis (EDA) dilakukan, antara lain:
-- Pemeriksaan missing values untuk memastikan kelengkapan data.
-![Missing values](image/Screenshot 2025-05-21 143729.png)
-- Visualisasi hubungan antar fitur numerik menggunakan correlation heatmap untuk mengidentifikasi korelasi yang tinggi dengan variabel target (Price).
-![Heatmap Korelasi Sebelum](image/heatmap.png) (Sebelum mengubah tipe data beberapa feature numerik)
-![Heatmap Korelasi Setelah](image/heatmap-2.png) (Setelah mengubah tipe data)
-
-
-
-Analisis statistik deskriptif untuk melihat sebaran nilai fitur, seperti rata-rata, median, minimum, maksimum, dan standar deviasi.
-
-
-
-Feature selection dilakukan berdasarkan nilai korelasi dan pentingnya fitur dari model awal, untuk mengeliminasi fitur yang kurang berpengaruh terhadap target.
-
+- **Mengidentifikasi bentuk dataset, struktur, deskripsi fitur numerik**
+- **Mengidentifikasi kategori _distinct/unique_**
+  ```
+  distinct_engine = df["Engine Type"].unique()
+  print(distinct_engine)
+  ```
+- **Pemeriksaan missing values untuk memastikan kelengkapan data.**
+  
+  ![Missing values](image/missing.png)
+- **Pemeriksaan duplikasi data**
+- **Visualisasi hubungan antar fitur numerik menggunakan correlation heatmap untuk mengidentifikasi korelasi yang tinggi dengan variabel target (Price).**
+  ![Heatmap Korelasi Sebelum](image/heatmap.png) (Sebelum mengubah tipe data beberapa feature numerik)
+  ![Heatmap Korelasi Setelah](image/heatmap-2.png) (Setelah mengubah tipe data)
+- **Boxplot untuk mengidentifikasi outlier pada feature**
+  ![Boxplot Sebelum](image/boxplot-sebelum.png) (Sebelum mengubah tipe data beberapa feature numerik)
+  ![Boxplot Setelah](image/boxplot-setelah.png) (Setelah mengubah tipe data)
+- **Pairplot untuk mengetahui bagaimana korelasi terhadap Price**
+  ![Pairplot](image/pairplot.png)
 Tahapan ini memberikan dasar kuat untuk preprocessing lanjutan, seleksi fitur yang tepat, serta peningkatan performa model prediktif secara keseluruhan.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+Teknik _data preparation_ atau _preprocessing_ yang dilakukan adalah:
+- Menghilangkan feature yang tidak diperlukan, pada kasus ini adalah "Model Name" karena sifatnya yang _unique_ sehingga bukann fitur yang relevan untuk melakukan _predictive analysis_ regresi.
+```
+pred_columns = [col for col in df.columns if col != 'Model Name']
+df = df[pred_columns]
+```
+- Mengubah tipe data ke numeric, supaya semua feature numerik seragam dan tidak terjadi kesalahan interpretasi data.
+  ```
+  for col in numeric_cols:
+    # Menghilangkan koma dan spasi lalu ubah ke float
+    df[col] = df[col].str.replace(',', '', regex=True)
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+  def ft_in_to_inches(length):
+    try:
+        ft, inch = length.split('/')
+        ft = int(ft)
+        inch = int(inch)
+        return ft * 12 + inch
+    except:
+        return np.nan
+  ```
+- Mengatasi nilai null pada fitur numerik, dengan cara mengisi nilai menggunakan nilai median fitur numerik tersebut
+  ```
+  numeric_cols = df.select_dtypes(include=[np.number]).columns
+  df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].median())
+  ```
+- Mengatasi outlier pada fitur yang memiliki korelasi tinggi terhadap Price, dengan cara capping
+  ```
+  for col in outlier_cols:
+    df[col] = np.where(df[col] < lower_bound[col], lower_bound[col], df[col])
+    df[col] = np.where(df[col] > upper_bound[col], upper_bound[col], df[col])
+  ```
+- Encoding fitur kategorik, agar
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
 - Menjelaskan proses data preparation yang dilakukan
