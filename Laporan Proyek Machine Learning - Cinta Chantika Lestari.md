@@ -183,32 +183,34 @@ Untuk mengevaluasi performa model regresi, digunakan tiga metrik utama:
    R² mengukur seberapa besar variasi dalam data target yang dapat dijelaskan oleh model. Nilai R² berkisar antara 0 hingga 1. Semakin tinggi nilainya, semakin baik model dalam menjelaskan variasi data target.  
    **Formula:**
    R² = 1 - (Σ(yᵢ - ŷᵢ)² / Σ(yᵢ - ȳ)²)
----
 
-### Hasil Evaluasi
+### Hasil Evaluasi Model
 
-Berikut adalah hasil evaluasi dari kedua model pada data uji:
+| Model                           | MAE (↓)       | RMSE (↓)      | R² (↑)     |
+|--------------------------------|---------------|---------------|------------|
+| Linear Regression              | 314,165.48    | 427,787.68    | 0.8203     |
+| Random Forest Regressor (best) | **243,975.85** | **352,628.35** | **0.8779** |
 
-**Linear Regression**
-- MAE  : 314.165,48
-- RMSE : 427.787,68
-- R²   : 0,8203
-
-**Random Forest Regressor (setelah tuning)**
-- Best Parameters: `{'n_estimators': 300, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1}`
-- MAE  : 243.975,85
-- RMSE : 352.628,35
-- R²   : 0,8779
+Model **Random Forest Regressor** yang telah dioptimasi dengan **GridSearchCV** menunjukkan performa yang lebih baik dibanding Linear Regression. Nilai R² sebesar 0.8779 mengindikasikan bahwa model mampu menjelaskan sekitar **87.8% variasi harga pesawat**. RMSE sebesar 352,628 menunjukkan bahwa kesalahan rata-rata prediksi berada pada kisaran $352,628, yang masih proporsional terhadap skala harga pesawat.
 
 ---
 
 ### Kesimpulan Evaluasi
 
-Model **Random Forest Regressor** menunjukkan performa yang lebih baik dibandingkan dengan Linear Regression. Hal ini dibuktikan dari:
+Hasil evaluasi yang diperoleh menunjukkan bahwa model **Random Forest Regressor** menunjukkan performa yang lebih baik dibandingkan dengan Linear Regression. Hal ini dibuktikan dari:
 - Nilai **MAE dan RMSE yang lebih rendah**, yang menandakan kesalahan prediksi yang lebih kecil secara rata-rata.
 - Nilai **R² sebesar 0,8779**, yang menunjukkan bahwa model dapat menjelaskan sekitar **87,79% variasi pada data target**, dibandingkan dengan 82,03% pada Linear Regression.
 
-Dengan demikian, **Random Forest Regressor dipilih sebagai model terbaik** untuk menyelesaikan permasalahan regresi harga pesawat dalam proyek ini.
+- **Random Forest Regressor** adalah model terbaik karena memberikan prediksi yang lebih akurat (MAE dan RMSE lebih rendah serta R² lebih tinggi).
+- Model ini mendukung tujuan dari proyek ini dengan:
+  - Model prediktif yang dibuat menghasilkan harga pesawat dengan akurasi tinggi berdasarkan parameter teknis dan operasional.
+  - Mengidentifikasi faktor-faktor penting yang memengaruhi valuasi pesawat.
+  - Mendukung pengambilan keputusan bisnis berbasis data dalam transaksi pesawat, perencanaan armada, dan investasi.
+  - Mengurangi asimetri informasi dalam pasar pesawat dengan estimasi harga yang transparan dan objektif sesuai data yang ada.
+
+Dengan demikian, model yang dihasilkan tidak hanya baik secara metrik, tetapi juga **bernilai strategis dalam konteks bisnis dan industri penerbangan**.
+
+---
 
 
 ## Referensi
