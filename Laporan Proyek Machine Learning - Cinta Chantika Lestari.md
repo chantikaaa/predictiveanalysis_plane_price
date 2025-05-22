@@ -105,6 +105,7 @@ Teknik _data preparation_ atau _preprocessing_ yang dilakukan adalah:
     except:
         return np.nan
   ```
+- Standarisasi format teks (pada kasus ini "piston" diubah menjadi "Piston") tujuannya untuk  memastikan bahwa nilai yang sama diwakili dengan cara yang sama di seluruh dataset, sehingga algoritma tidak menganggap "piston" dan "Piston" sebagai dua kategori yang berbeda.
 - Mengatasi nilai null pada fitur numerik, dengan cara mengisi nilai menggunakan nilai median fitur numerik tersebut. Ini perlu dilakukan karena jika ada nilai null, model akan error atau memberikan hasil yang tidak valid.
   ```
   numeric_cols = df.select_dtypes(include=[np.number]).columns
@@ -116,7 +117,7 @@ Teknik _data preparation_ atau _preprocessing_ yang dilakukan adalah:
     df[col] = np.where(df[col] < lower_bound[col], lower_bound[col], df[col])
     df[col] = np.where(df[col] > upper_bound[col], upper_bound[col], df[col])
   ```
-- Encoding fitur kategorik menjadi format numerik yang dapat dipahami dan diproses oleh algoritma Machine Learning.
+- Encoding fitur kategorik menjadi format numerik sehingga dapat dipahami dan diproses oleh algoritma Machine Learning.
   ```
   engine_dummies = pd.get_dummies(df['Engine Type'], prefix='Engine', drop_first=True)
   ```
@@ -145,7 +146,7 @@ Teknik _data preparation_ atau _preprocessing_ yang dilakukan adalah:
 ## Modeling
 Tahapan ini menjelaskan proses pemodelan machine learning yang digunakan untuk memprediksi harga pesawat berdasarkan berbagai fitur teknis. Dua algoritma regresi yang digunakan dalam proyek ini adalah Linear Regression dan Random Forest Regressor.
 - Linear Regression :Linear Regression digunakan sebagai baseline model. Algoritma ini bekerja dengan mencari garis lurus terbaik yang meminimalkan selisih antara nilai aktual dan nilai prediksi (disebut residual). Kelebihannya terletak pada kesederhanaan, interpretabilitas, dan efisiensi komputasi. Namun, kelemahannya adalah kurang fleksibel dalam menangkap pola non-linear dalam data. Model ini dilatih menggunakan data training dan dievaluasi menggunakan metrik MAE, RMSE, dan R².
-- Random Forest Regressor : Random Forest Regressor adalah algoritma ensemble yang membentuk banyak decision tree dan menggabungkan prediksi mereka. Model ini lebih baik dalam menangkap hubungan non-linear dan lebih robust terhadap overfitting. Untuk meningkatkan performa, dilakukan hyperparameter tuning menggunakan GridSearchCV, dengan parameter sebagai berikut:
+- Random Forest Regressor : Random Forest Regressor adalah algoritma ensemble yang membentuk banyak decision tree dan menggabungkan prediksi mereka. Model ini lebih baik dalam menangkap hubungan non-linear dan lebih robust terhadap overfitting. Selanjutnya, dilakukan hyperparameter tuning menggunakan GridSearchCV sehingga dapat menemukan kombinasi parameter yang optimal agar Random Forest dapat mencapai performa terbaik dan menghindari overfitting atau underfitting, dengan parameter sebagai berikut:
 
   n_estimators: [100, 200, 300]
   
